@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "AirportService";
+
+service AirportEntry {
+  rpc AddAirport (AirportRequestModel) returns (Empty);
+}
+
+message Empty {
+}
+
+// The request message containing the user's name.
+message AirportRequestModel {
+  string country = 1;
+  string city = 2;
+  string name = 3;
+}
