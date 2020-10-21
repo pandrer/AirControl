@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AirlineService.Proxies.AirportProxy;
+using AirlineService.Proxies.HangarProxy;
 using AirlineService.Services;
 using AirlineService.Storage;
 using AirlineService.Storage.Interfaz;
 using AirlineService.Storage.Repositories;
+using AirportService;
+using HangarService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace AirlineService
 {
@@ -33,7 +34,21 @@ namespace AirlineService
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+
+            services.AddGrpcClient<AircraftEntry.AircraftEntryClient>(o =>
+            {
+                o.Address = new Uri("https://localhost:5010");
+            });
+
+            services.AddGrpcClient<AirportEntry.AirportEntryClient>(o =>
+            {
+                o.Address = new Uri("https://localhost:5011");
+            });
+
             services.AddTransient<IAirlineRepository, AirlineRepository>();
+
+            services.AddTransient<IAirportProxy, AirportProxy>();
+            services.AddTransient<IHangarProxy, HangarProxy>();
 
             services.AddGrpc();
         }

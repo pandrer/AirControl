@@ -6,10 +6,17 @@ import "google/protobuf/empty.proto";
 
 // The aircraft service definition.
 service AircraftEntry {
-  rpc AddAircraft (AircraftRequestModel) returns (Empty);
+  rpc AddAircraft (AircraftRequestModel) returns (DefaultResponse);
+  rpc GetAircraft (AircraftsFilter) returns (AircraftRequestModel);
+  rpc GetAllAircrafts (Empty) returns (AircraftsResponseModel);
 }
 
+
 message Empty {
+}
+
+message DefaultResponse {
+  string message = 1;
 }
 
 // The request message containing the user's name.
@@ -17,4 +24,22 @@ message AircraftRequestModel {
   string licensePlate = 1;
   string model = 2;
   int32 passengers = 3;
+  string message = 4;
+}
+
+message AircraftModel {
+  string licensePlate = 1;
+  string model = 2;
+  int32 passengers = 3;
+}
+
+message AircraftsResponseModel
+{
+  repeated AircraftModel aircrafts = 1;
+  string message = 2;
+}
+
+message AircraftsFilter
+{
+  string licensePlate = 1;
 }

@@ -3,15 +3,40 @@ syntax = "proto3";
 option csharp_namespace = "AirportService";
 
 service AirportEntry {
-  rpc AddAirport (AirportRequestModel) returns (Empty);
+  rpc AddAirport (AirportModel) returns (DefaultResponse);
+  rpc GetAirport (AirportFilter) returns (AirportResponseModel);
+  rpc GetAllAirports (Empty) returns (AirportsResponseModel);
+}
+
+message DefaultResponse {
+  string message = 1;
 }
 
 message Empty {
 }
 
 // The request message containing the user's name.
-message AirportRequestModel {
+message AirportResponseModel {
   string country = 1;
   string city = 2;
   string name = 3;
+  string message = 4;
+}
+
+message AirportModel {
+  int32 id = 1;
+  string country = 2;
+  string city = 3;
+  string name = 4;
+}
+
+message AirportsResponseModel
+{
+  repeated AirportModel airports = 1;
+  string message = 2;
+}
+
+message AirportFilter
+{
+  string city = 1;
 }

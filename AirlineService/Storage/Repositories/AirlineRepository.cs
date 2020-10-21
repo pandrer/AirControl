@@ -1,5 +1,6 @@
 ﻿using AirlineService.Storage.Interfaz;
 using AirlineService.Storage.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AirlineService.Storage.Repositories
@@ -23,6 +24,12 @@ namespace AirlineService.Storage.Repositories
         {
             _context.FlightRoute.Add(model);
             return _context.SaveChanges();
+        }
+
+        public async Task<FlightRouteRaw> GetFligthRoute(int source, int target)
+        {
+            var flightRoute = _context.FlightRoute.Where(x => x.Source == source && x.Target == target).FirstOrDefault();
+            return flightRoute;
         }
     }
 }

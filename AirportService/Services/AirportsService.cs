@@ -3,6 +3,7 @@ using AirportService.Storage.Models;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AirportService.Services
@@ -19,7 +20,7 @@ namespace AirportService.Services
             _airportRepository = airportRepository;
         }
 
-        public override Task<Empty> AddAirport(AirportRequestModel request, ServerCallContext context)
+        public override Task<DefaultResponse> AddAirport(AirportModel request, ServerCallContext context)
         {
             try
             {
@@ -36,7 +37,57 @@ namespace AirportService.Services
                 _logger.LogError(ex, $"ERROR: Add {request.Name} Airport");
             }
 
-            return Task.FromResult(new Empty());
+            return Task.FromResult(new DefaultResponse());
+        }
+
+        public override async Task<AirportResponseModel> GetAirport(AirportFilter request, ServerCallContext context)
+        {
+            var response = new AirportResponseModel();
+            try
+            {
+                var airport = await _airportRepository.GetAirport(request.City);
+                if (airport == null)
+                {
+                    response.Message = $"Airport {request.City} does not exist";
+                    _logger.LogInformation($"Get Airport {request.City} does not exist");
+                    return response;
+                }
+                response.City = airport.City;
+                response.Country = airport.Country;
+                response.Name = airport.Name;
+
+                _logger.LogInformation($"Get {airport.Name} Aircraft");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"ERROR: Get {request.City} Aircraft");
+            }
+            return response;
+        }
+
+        public override async Task<AirportsResponseModel> GetAllAirports(Empty request, ServerCallContext context)
+        {
+            var response = new AirportsResponseModel();
+            try
+            {
+                var airpors = (await _airportRepository.GetAllAirports())
+                    .Select(x => new AirportModel()
+                    {
+                        City = x.City,
+                        Country = x.Country,
+                        Name = x.Name,
+                        Id = x.Id
+                    });
+                _logger.LogInformation($"Get all Aircrafts");
+
+                response.Airports.AddRange(airpors);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"ERROR: Get all Airports");
+            }
+            return response;
         }
     }
 }

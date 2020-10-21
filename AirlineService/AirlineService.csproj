@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -20,6 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="..\AirportService\Protos\airport.proto" GrpcServices="Client">
+      <Link>Protos\airport.proto</Link>
+    </Protobuf>
+    <Protobuf Include="..\HangarService\Protos\aircraft.proto" GrpcServices="Client">
+      <Link>Protos\aircraft.proto</Link>
+    </Protobuf>
     <Protobuf Include="Protos\airline.proto" GrpcServices="Server" />
   </ItemGroup>
 

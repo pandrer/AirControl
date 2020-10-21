@@ -3,22 +3,29 @@ syntax = "proto3";
 option csharp_namespace = "AirlineService";
 
 service AirlineEntry {
-  rpc AddFlightRoute (FlightRouteRequestModel) returns (Empty);
-  rpc AddFlight (FlightRequestModel) returns (Empty);
+  rpc AddFlightRoute (FlightRouteRequestModel) returns (DefaultResponse);
+  rpc AddFlight (FlightRequestModel) returns (DefaultResponse);
 }
 
 message Empty {
 }
 
+message DefaultResponse {
+  string message = 1;
+}
+
 // The request message containing the user's name.
 message FlightRouteRequestModel {
-  int32 source = 1;
-  int32 target = 2;
+  string source = 1;
+  string target = 2;
   int32 estimatedTime = 3;
+  string message = 4;
 }
 
 message FlightRequestModel {
-  int32 fligthRoute = 1;
-  string aircraft = 2;
-  int32 state = 3;
+  string source = 1;
+  string target = 2;
+  string aircraft = 3;
+  int32 state = 4;
+  string message = 5;
 }

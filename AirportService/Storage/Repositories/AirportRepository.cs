@@ -1,5 +1,7 @@
-﻿    using AirportService.Storage.Interfaz;
+﻿using AirportService.Storage.Interfaz;
 using AirportService.Storage.Models;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AirportService.Storage.Repositories
@@ -16,5 +18,21 @@ namespace AirportService.Storage.Repositories
             _context.Airports.Add(model);
             return _context.SaveChanges();
         }
+
+        public async Task<AirportRaw> GetAirport(string city)
+        {
+            var airport = _context.Airports
+                .Where(x => x.City == city)
+                .FirstOrDefault();
+            return airport;
+        }
+
+        public async Task<IList<AirportRaw>> GetAllAirports()
+        {
+            var airports = _context.Airports.ToList();
+            return airports;
+        }
+
+
     }
 }

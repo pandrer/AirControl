@@ -9,5 +9,7 @@ namespace AirportService.Storage.Interfaz
     public interface IAirportRepository
     {
         Task<int> AddAirport(AirportRaw model);
+        Task<AirportRaw> GetAirport(string city);
+        Task<IList<AirportRaw>> GetAllAirports();
     }
 }

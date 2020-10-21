@@ -7,5 +7,6 @@ namespace AirlineService.Storage.Interfaz
     {
         Task<int> AddFligth(FlightRaw model);
         Task<int> AddFligthRoute(FlightRouteRaw model);
+        Task<FlightRouteRaw> GetFligthRoute(int source, int target);
     }
 }
