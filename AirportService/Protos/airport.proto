@@ -8,6 +8,8 @@ service AirportEntry {
   rpc GetAllAirports (Empty) returns (AirportsResponseModel);
 }
 
+
+
 message DefaultResponse {
   string message = 1;
 }
@@ -39,4 +41,16 @@ message AirportsResponseModel
 message AirportFilter
 {
   string city = 1;
+}
+
+
+
+
+service ControlTowerEntry {
+  rpc UpdateFligthStatus (ControlTowerRequestModel) returns (DefaultResponse);
+}
+
+message ControlTowerRequestModel {
+  int32 fligthId = 1;
+  int32 status = 2;
 }

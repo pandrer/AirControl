@@ -1,6 +1,8 @@
 ﻿using AirlineService.Proxies.HangarProxy.Models;
 using HangarService;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AirlineService.Proxies.HangarProxy
@@ -29,6 +31,20 @@ namespace AirlineService.Proxies.HangarProxy
             };
             _logger.LogInformation($"CALL HANGAR PROXY: GET {licensePlate} Aircraft");
             return hangarAircraftModel;
+        }
+
+        public async Task<IList<HangarAircraftModel>> GetAircrafts()
+        {
+            var aircraftsFromService = _client.GetAllAircrafts(new HangarService.Empty());
+
+            var aircrafts = aircraftsFromService.Aircrafts.Select(x => new HangarAircraftModel()
+            {
+                LicensePlate = x.LicensePlate,
+                Model = x.Model,
+                Passengers = x.Passengers,
+            }).ToList();
+            _logger.LogInformation($"CALL HANGAR PROXY: GET Aircrafts");
+            return aircrafts;
         }
     }
 }

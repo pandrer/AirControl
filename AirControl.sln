@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HangarService", "HangarServ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirportService", "AirportService\AirportService.csproj", "{63826489-2B6C-496B-869E-892C280B4DDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirlineService", "AirlineService\AirlineService.csproj", "{E12E2752-5EB2-4BA1-A421-988BA6D0FC90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirlineService", "AirlineService\AirlineService.csproj", "{E12E2752-5EB2-4BA1-A421-988BA6D0FC90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

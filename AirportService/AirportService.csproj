@@ -20,7 +20,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="..\AirlineService\Protos\airline.proto" GrpcServices="Client">
+      <Link>Protos\airline.proto</Link>
+    </Protobuf>
     <Protobuf Include="Protos\airport.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Proxies\AirlineProxy\Models\" />
   </ItemGroup>
 
 </Project>

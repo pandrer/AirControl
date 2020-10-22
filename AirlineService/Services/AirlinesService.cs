@@ -17,6 +17,8 @@ namespace AirlineService.Services
         private readonly IHangarProxy _hangarProxy;
         private readonly IAirportProxy _airportProxy;
 
+        private static int[] STATUSACCEPT = { 1, 2 };
+
         public AirlinesService(ILogger<AirlinesService> logger, IAirlineRepository airlineRepository, IHangarProxy hangarProxy, IAirportProxy airportProxy)
         {
             _logger = logger;
@@ -109,6 +111,96 @@ namespace AirlineService.Services
             }
 
             return result;
+        }
+
+        public override async Task<FligthsResponse> GetFligths(Empty request, ServerCallContext context)
+        {
+            var response = new FligthsResponse();
+            var airports = await _airportProxy.GetAllAirports();
+            var aircrafts = await _hangarProxy.GetAircrafts();
+            var fligths = await _airlineRepository.GetFligths();
+            var routes = await _airlineRepository.GetFligthRoutes();
+
+            foreach (var fligth in fligths)
+            {
+                var fligthModel = new FligthModel();
+                fligthModel.Aircraft = fligth.Aircraft;
+                var route = routes.Where(x => x.Id == fligth.FligthRoute).FirstOrDefault();
+                fligthModel.Source = airports.Where(x => x.Id == route.Source).FirstOrDefault().City;
+                fligthModel.Target = airports.Where(x => x.Id == route.Target).FirstOrDefault().City;
+                fligthModel.State = fligth.State switch
+                {
+                    1 => "CURRENTLY-FLYING",
+                    2 => "CANCELED",
+                    _ => "SCHEDULED"
+                };
+                response.Fligths.Add(fligthModel);
+            }
+
+            return response;
+        }
+
+        public override async Task<FligthsResponse> GetFligthsFilter(FligthFilter request, ServerCallContext context)
+        {
+            var fligthsResponse = new FligthsResponse();
+
+
+            return fligthsResponse;
+        }
+
+        public override async Task<RoutesResponse> GetRoutes(Empty request, ServerCallContext context)
+        {
+            var response = new RoutesResponse();
+            try
+            {
+                var airports = await _airportProxy.GetAllAirports();
+                var routes = (await _airlineRepository.GetFligthRoutes())
+                    .Select(x => new RouteModel()
+                    {
+                        Source = airports.Where(y => y.Id == x.Source).FirstOrDefault().City,
+                        Target = airports.Where(y => y.Id == x.Target).FirstOrDefault().City,
+                    });
+                _logger.LogInformation($"Get all Routes");
+
+                response.Routes.AddRange(routes);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"ERROR: Get all Routes");
+            }
+            return response;
+        }
+
+        public override async Task<DefaultResponse> UpdateFligthStatus(ControlTowerRequestModel request, ServerCallContext context)
+        {
+            var response = new DefaultResponse();
+            try
+            {
+
+                if (!STATUSACCEPT.Where(x => x == request.Status).Any())
+                {
+                    response.Message = $"Status {request.Status} is not vaild";
+                    return response;
+                }
+                
+                _airlineRepository.UpdateFligthStatus(request.FligthId, request.Status);
+
+                var statusString = request.Status switch
+                {
+                    1 => "CURRENTLY-FLYING",
+                    2 => "CANCELED",
+                    _ => "SCHEDULED"
+                };
+
+                response.Message = $"Fligth status changed to {statusString}";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"ERROR: Update fligth status");
+            }
+            return response;
         }
 
     }

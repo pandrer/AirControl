@@ -9,5 +9,6 @@ namespace AirlineService.Proxies.HangarProxy
     public interface IHangarProxy
     {
         Task<HangarAircraftModel> GetAircraft(string licensePlate);
+        Task<IList<HangarAircraftModel>> GetAircrafts();
     }
 }

@@ -1,4 +1,6 @@
-﻿using AirportService.Services;
+﻿using AirlineService;
+using AirportService.Proxies.AirlineProxy;
+using AirportService.Services;
 using AirportService.Storage;
 using AirportService.Storage.Interfaz;
 using AirportService.Storage.Repositories;
@@ -9,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace AirportService
 {
@@ -30,7 +33,13 @@ namespace AirportService
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddGrpcClient<AirlineEntry.AirlineEntryClient>(o =>
+            {
+                o.Address = new Uri("https://localhost:5012");
+            });
+
             services.AddTransient<IAirportRepository, AirportRepository>();
+            services.AddTransient<IAirlineProxy, AirlineProxy>();
             services.AddGrpc();
         }
 
@@ -47,6 +56,7 @@ namespace AirportService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<AirportsService>();
+                endpoints.MapGrpcService<ControlTowerService>();
 
                 endpoints.MapGet("/", async context =>
                 {
